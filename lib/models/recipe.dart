@@ -39,16 +39,18 @@ class Recipe {
       'image': image,
     };
   }
+  List<String> get ingredientsList => ingredients.split('|');
 
 }
 
-enum Category { breakfast, lunch, dinner, sweets, drinks }
+enum Category { breakfast, lunch, dinner, sweets, drinks, snacks}
 
 const categoryName = {
   'Breakfast': Category.breakfast,
   'Lunch': Category.lunch,
   'Dinner': Category.dinner,
   'Sweets': Category.sweets,
+  'Snacks': Category.snacks,
   'Drinks': Category.drinks
 };
 
