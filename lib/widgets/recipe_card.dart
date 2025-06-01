@@ -1,11 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:recipe_app/models/recipe.dart';
 import 'package:recipe_app/screens/recipe_details.dart';
 
 class RecipeCard extends StatelessWidget {
-  // const RecipeCard ({super.key, required this.recipe});
+  const RecipeCard ({super.key, required this.recipe});
 
-  // final Recipe recipe;
+  final Recipe recipe;
 
   @override
   Widget build(BuildContext context) {
@@ -13,10 +15,10 @@ class RecipeCard extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
         onTap: () {
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(builder: (ctx) => RecipeDetails(recipe: recipe,),),
-          // );
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (ctx) => RecipeDetails(recipe: recipe,),),
+          );
         },
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -30,14 +32,13 @@ class RecipeCard extends StatelessWidget {
                     width: 85,
                     height: 85,
                     decoration: BoxDecoration(
-                      // shape: BoxShape.circle,
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(12),
                         bottomLeft: Radius.circular(12),
                       ),
                     ),
-                    child: Image.asset(
-                      "assets/images/shaw-sandwich.jpeg",
+                    child: Image.file(
+                      File(recipe.image),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -47,7 +48,7 @@ class RecipeCard extends StatelessWidget {
                       SizedBox(
                         width: 150,
                         child: Text(
-                          "Shawarma",
+                          recipe.name,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 24,
@@ -57,7 +58,7 @@ class RecipeCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "Lunch",
+                        recipe.category.name,
                         style: TextStyle(
                           color: const Color.fromARGB(255, 105, 104, 104),
                         ),
@@ -68,9 +69,9 @@ class RecipeCard extends StatelessWidget {
                         children: [
                           Icon(Icons.timer_outlined, size: 16),
                           SizedBox(width: 4),
-                          Text('1:30'),
+                          Text(recipe.formatedDuration),
                           SizedBox(width: 25),
-                          Text("Medium"),
+                          Text(recipe.difficulty.name),
                         ],
                       ),
                     ],

@@ -9,7 +9,7 @@ class Recipe {
   final Category category;
   final Difficulty difficulty;
   final String? notes;
-  final String? image; // image path from path provider + image picker
+  final String image; // image path from path provider + image picker
   final bool isFavorite;
 
   Recipe({
@@ -19,11 +19,17 @@ class Recipe {
     required this.duration,
     required this.category,
     required this.difficulty,
+    required this.image,
     this.notes,
     this.isFavorite = false,
-    this.image,
     id
   }):id = id ?? Uuid().v4();
+
+  String get formatedDuration {
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes.remainder(60);
+    return '$hours:$minutes';
+  }
 
   Map<String,Object?> get recipeMap{
     return{
@@ -33,9 +39,9 @@ class Recipe {
       'instructions': instructions,
       'duration': duration.inSeconds,
       'category': category.name,
-      'difficulity': difficulty.name,
+      'difficulty': difficulty.name,
       'notes': notes,
-      'isFavorite': isFavorite,
+      'isFavorite': isFavorite ? 1 : 0,
       'image': image,
     };
   }
@@ -46,20 +52,20 @@ class Recipe {
 enum Category { breakfast, lunch, dinner, sweets, drinks, snacks}
 
 const categoryName = {
-  'Breakfast': Category.breakfast,
-  'Lunch': Category.lunch,
-  'Dinner': Category.dinner,
-  'Sweets': Category.sweets,
-  'Snacks': Category.snacks,
-  'Drinks': Category.drinks
+  'breakfast': Category.breakfast,
+  'lunch': Category.lunch,
+  'dinner': Category.dinner,
+  'sweets': Category.sweets,
+  'snacks': Category.snacks,
+  'drinks': Category.drinks
 };
 
 enum Difficulty { easy, medium, hard }
 
 const difficultyName = {
-  'Easy': Difficulty.easy,
-  'Medium': Difficulty.medium,
-  'Hard': Difficulty.hard
+  'easy': Difficulty.easy,
+  'medium': Difficulty.medium,
+  'hard': Difficulty.hard
 };
 
 

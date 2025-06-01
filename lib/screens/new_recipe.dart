@@ -1,11 +1,15 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:recipe_app/models/recipe.dart';
 import 'package:material_duration_picker/material_duration_picker.dart';
+import 'package:uuid/uuid.dart';
 
 class NewRecipe extends StatefulWidget {
-  const NewRecipe({super.key});
+  const NewRecipe({super.key, required this.onSave});
+
+  final Function(Recipe recipe) onSave;
 
   @override
   State<NewRecipe> createState() {
@@ -29,9 +33,7 @@ class _NewRecipeState extends State<NewRecipe> {
   final List<String> _ingredients = [];
   final _ingredientsController = TextEditingController();
 
-
   void _addIngredient() {
-    // TODO:  ingredients: _ingredients.join('|'),
     if (_ingredientsController.text.trim().isNotEmpty) {
       setState(() {
         _ingredients.add(_ingredientsController.text.trim());
@@ -47,10 +49,10 @@ class _NewRecipeState extends State<NewRecipe> {
   }
 
   final List<String> _instructions = [];
+
   final _instructionsController = TextEditingController();
 
   void _addInstruction() {
-    // TODO:  instructions: _instructions.join('|'),
     if (_instructionsController.text.trim().isNotEmpty) {
       setState(() {
         _instructions.add(_instructionsController.text.trim());
@@ -88,42 +90,32 @@ class _NewRecipeState extends State<NewRecipe> {
     return '$hours:$minutes';
   }
 
-  File? _pickedImage; 
-  final ImagePicker _picker = ImagePicker(); 
+ String? _imagePath;
+ File? _pickedImage;
 
-  Future<void> _pickImage(ImageSource source) async {
-    try {
-      final XFile? pickedFile = await _picker.pickImage(source: source);
-      if (pickedFile != null) {
-        setState(() {
-          _pickedImage = File(pickedFile.path); 
-        });
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to pick image: ${e.toString()}')),
-      );
+  final ImagePicker _picker = ImagePicker();
+
+  Future<String?> _saveImagePermanently(File? imageFile) async {
+    if (imageFile == null) return null;
+
+    final appDir = await getApplicationDocumentsDirectory();
+    final fileName = 'recipe_${const Uuid().v4()}.jpg'; // Ensure UUID is used here
+    final savedImage = await imageFile.copy('${appDir.path}/$fileName');
+    return savedImage.path;
+  }
+  void _pickImage(ImageSource source) async {
+    final XFile? pickedFile = await _picker.pickImage(source: source, maxWidth: 600); // Optional: resize
+    if (pickedFile != null) {
+      setState(() {
+        _pickedImage = File(pickedFile.path);
+      });
+      final permanentPath = await _saveImagePermanently(_pickedImage);
+      setState(() {
+        _imagePath = permanentPath;
+      });
     }
   }
 
-  // Future<String?> _saveImagePermanently(File? imageFile) async {
-  //   if (imageFile == null) return null;
-
-  //   final appDir = await getApplicationDocumentsDirectory();
-  //   final fileName = 'recipe_${DateTime.now().millisecondsSinceEpoch}.jpg';
-  //   final savedImage = await imageFile.copy('${appDir.path}/$fileName');
-
-  //   return savedImage
-  //       .path; // Returns path like: "/data/user/0/com.example.app/files/recipe_123456.jpg"
-  // }
-
-  // void _pickImage(ImageSource source) async {
-  //   final XFile? pickedFile = await _picker.pickImage(source: source);
-  //   if (pickedFile != null) {
-  //     final permanentPath = await _saveImagePermanently(File(pickedFile.path));
-  //     setState(() => _imagePath = permanentPath); // Store path in state
-  //   }
-  // }
 
   void _showImageSourceDialog(BuildContext context) {
     showModalBottomSheet(
@@ -155,6 +147,82 @@ class _NewRecipeState extends State<NewRecipe> {
     );
   }
 
+  void _addRecipe() {
+    if (_nameController.text.trim().isEmpty ||
+        _ingredients.isEmpty ||
+        _instructions.isEmpty ||
+        _pickedImage == null ||
+        _selectedDuration == null) { // TODO: duration 0 => wrong
+      showDialog(
+        context: context,
+        builder:
+            (ctx) => AlertDialog(
+              title: Text('Invalid Input'),
+              content: Text(
+                'Please make sure you enter the recipe name, ingredients, instructions, duration and a photo',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(ctx);
+                  },
+                  child: Text('Okay'),
+                ),
+              ],
+            ),
+      );
+      return;
+    }
+
+    widget.onSave(
+      Recipe(
+        name: _nameController.text,
+        ingredients: _ingredients.join('|'),
+        instructions: _instructions.join('|'),
+        duration: _selectedDuration!,
+        category: _selectedCategory,
+        difficulty: _selectedDifficulty,
+        notes: _notesController.text,
+        image: _imagePath!, // TODO: figure out favorites
+      ),
+    );
+
+    // Navigator.pop(context);
+  }
+
+  Future<bool> _showCancelConfirmationDialog() async {
+    return await showDialog<bool>(
+          context: context,
+          barrierDismissible: true,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Discard changes?'),
+              content: const Text(
+                'Are you sure you want to discard this recipe?',
+              ),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text('No'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: const Text('Yes'),
+                ),
+              ],
+            );
+          },
+        ) ??
+        false; // If user dismisses dialog, return false
+  }
+
+  void _cancelRecipe() async {
+    final shouldCancel = await _showCancelConfirmationDialog();
+    if (shouldCancel && mounted) {
+      // Navigator.pop(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -163,7 +231,10 @@ class _NewRecipeState extends State<NewRecipe> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
-            child: IconButton(onPressed: (){}, icon: Icon(Icons.favorite_border_sharp)),
+            child: IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.favorite_border_sharp),
+            ),
           ),
         ],
       ),
@@ -327,7 +398,7 @@ class _NewRecipeState extends State<NewRecipe> {
                 );
               },
             ),
-            SizedBox(height: 20,),
+            SizedBox(height: 20),
             Text(
               "Instructions:",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -367,20 +438,28 @@ class _NewRecipeState extends State<NewRecipe> {
             ),
             TextField(
               controller: _notesController,
-              decoration: InputDecoration(
-                labelText: "Notes",
-              ),
+              decoration: InputDecoration(labelText: "Notes"),
               maxLines: null,
-               keyboardType: TextInputType.multiline,
+              keyboardType: TextInputType.multiline,
             ),
-            SizedBox(height: 15,),
+            SizedBox(height: 15),
             Row(
               children: [
-                Expanded(child: ElevatedButton(onPressed: (){}, child: Text("Cancel"),)),
-                SizedBox(width:15,),
-                Expanded(child: ElevatedButton(onPressed: (){}, child: Text("Save"))),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: _cancelRecipe,
+                    child: Text("Cancel"),
+                  ),
+                ),
+                SizedBox(width: 15),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: _addRecipe,
+                    child: Text("Save"),
+                  ),
+                ),
               ],
-            )
+            ),
           ],
         ),
       ),
