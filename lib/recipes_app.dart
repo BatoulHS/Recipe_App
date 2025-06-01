@@ -25,7 +25,7 @@ class _RecipesAppState extends State<RecipesApp> {
       ),
     );
     if (widget.savedRecipesList.isNotEmpty) {
-      mainContent = HomeScreen();
+      mainContent = HomeScreen(savedRecipes: widget.savedRecipesList,);
     }
     return Scaffold(body: Column(children: [Expanded(child: mainContent)]));
   }

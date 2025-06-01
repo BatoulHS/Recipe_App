@@ -187,6 +187,13 @@ class _NewRecipeState extends State<NewRecipe> {
       ),
     );
 
+     ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Recipe Saved!'),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+
     // Navigator.pop(context);
   }
 
@@ -289,7 +296,6 @@ class _NewRecipeState extends State<NewRecipe> {
             ),
 
             Row(
-              // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Text(
                   "Category:",
@@ -303,7 +309,7 @@ class _NewRecipeState extends State<NewRecipe> {
                           .map(
                             (category) => DropdownMenuItem(
                               value: category,
-                              child: Text(category.name.toUpperCase()),
+                              child: Text(category.name[0].toUpperCase() + category.name.substring(1)),
                             ),
                           )
                           .toList(),
@@ -332,7 +338,7 @@ class _NewRecipeState extends State<NewRecipe> {
                           .map(
                             (difficulty) => DropdownMenuItem(
                               value: difficulty,
-                              child: Text(difficulty.name.toUpperCase()),
+                              child: Text(difficulty.name[0].toUpperCase() + difficulty.name.substring(1),),
                             ),
                           )
                           .toList(),

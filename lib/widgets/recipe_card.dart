@@ -5,7 +5,7 @@ import 'package:recipe_app/models/recipe.dart';
 import 'package:recipe_app/screens/recipe_details.dart';
 
 class RecipeCard extends StatelessWidget {
-  const RecipeCard ({super.key, required this.recipe});
+  const RecipeCard({super.key, required this.recipe});
 
   final Recipe recipe;
 
@@ -17,7 +17,7 @@ class RecipeCard extends StatelessWidget {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (ctx) => RecipeDetails(recipe: recipe,),),
+            MaterialPageRoute(builder: (ctx) => RecipeDetails(recipe: recipe)),
           );
         },
         child: Padding(
@@ -36,8 +36,9 @@ class RecipeCard extends StatelessWidget {
                         topLeft: Radius.circular(12),
                         bottomLeft: Radius.circular(12),
                       ),
+                      
                     ),
-                    child: Image.file(
+                    child: Image.file( // TODO ROUND THE EDGES 
                       File(recipe.image),
                       fit: BoxFit.cover,
                     ),
@@ -58,7 +59,8 @@ class RecipeCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        recipe.category.name,
+                        recipe.category.name[0].toUpperCase() +
+                            recipe.category.name.substring(1),
                         style: TextStyle(
                           color: const Color.fromARGB(255, 105, 104, 104),
                         ),
@@ -71,7 +73,10 @@ class RecipeCard extends StatelessWidget {
                           SizedBox(width: 4),
                           Text(recipe.formatedDuration),
                           SizedBox(width: 25),
-                          Text(recipe.difficulty.name),
+                          Text(
+                            recipe.difficulty.name[0].toUpperCase() +
+                                recipe.difficulty.name.substring(1),
+                          ),
                         ],
                       ),
                     ],
