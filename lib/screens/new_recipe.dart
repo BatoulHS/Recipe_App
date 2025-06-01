@@ -7,9 +7,10 @@ import 'package:material_duration_picker/material_duration_picker.dart';
 import 'package:uuid/uuid.dart';
 
 class NewRecipe extends StatefulWidget {
-  const NewRecipe({super.key, required this.onSave});
+  const NewRecipe({super.key, required this.onSave, required this.onCancel});
 
   final Function(Recipe recipe) onSave;
+  final Function() onCancel;
 
   @override
   State<NewRecipe> createState() {
@@ -193,8 +194,6 @@ class _NewRecipeState extends State<NewRecipe> {
         duration: const Duration(seconds: 2),
       ),
     );
-
-    // Navigator.pop(context);
   }
 
   Future<bool> _showCancelConfirmationDialog() async {
@@ -220,13 +219,13 @@ class _NewRecipeState extends State<NewRecipe> {
             );
           },
         ) ??
-        false; // If user dismisses dialog, return false
+        false;
   }
 
   void _cancelRecipe() async {
     final shouldCancel = await _showCancelConfirmationDialog();
     if (shouldCancel && mounted) {
-      // Navigator.pop(context);
+      widget.onCancel();
     }
   }
 

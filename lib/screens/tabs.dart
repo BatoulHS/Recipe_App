@@ -27,6 +27,12 @@ class _TabScreenState extends State<TabScreen> {
     await insertRecipe(recipe);
   }
 
+  void _onCancel(){
+    setState(() {
+      _selectedIndex = 0;
+    });
+  }
+
   void _selectPage(int index) {
     setState(() {
       _selectedIndex = index;
@@ -42,7 +48,7 @@ class _TabScreenState extends State<TabScreen> {
     }
 
     if (_selectedIndex == 2) {
-      activePage = NewRecipe(onSave: _addNewRecipe);
+      activePage = NewRecipe(onSave: _addNewRecipe, onCancel: _onCancel);
     }
 
     if (_selectedIndex == 3) {
