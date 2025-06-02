@@ -18,6 +18,9 @@ class TabScreen extends StatefulWidget {
 }
 
 class _TabScreenState extends State<TabScreen> {
+
+
+
   int _selectedIndex = 0;
 
   void _addNewRecipe(Recipe recipe) async {
@@ -58,7 +61,7 @@ class _TabScreenState extends State<TabScreen> {
     }
 
     if (_selectedIndex == 4) {
-      activePage = FavoritesScreen();
+      activePage = FavoritesScreen(recipes: widget.savedRecipes,);
     }
 
     return Scaffold(

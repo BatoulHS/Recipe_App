@@ -25,7 +25,15 @@ class RecipeCard extends StatelessWidget {
           child: Stack(
             alignment: Alignment.topRight,
             children: [
-              Icon(Icons.favorite_border_outlined),
+              Icon(
+                recipe.isFavorite
+                    ? Icons.favorite
+                    : Icons.favorite_border_outlined,
+                color:
+                    recipe.isFavorite
+                        ? Colors.red
+                        : Colors.grey,
+              ),
               Row(
                 children: [
                   Container(

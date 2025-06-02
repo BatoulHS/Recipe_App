@@ -26,7 +26,15 @@ class HomeScreen extends StatelessWidget {
     Widget content;
     if (randomRecipes.isEmpty) {
       content = const Center(
-        child: Text('No Recipes Saved! Start saving your magic to see them here.', textAlign: TextAlign.center),
+        child: Column(
+          children: [
+            SizedBox(height: 200),
+            Text(
+              'No Recipes Saved! Start saving your magic to see them here.',
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       );
     } else {
       content = GridView.builder(

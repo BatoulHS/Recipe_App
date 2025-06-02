@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:recipe_app/models/recipe.dart';
+import 'package:recipe_app/screens/recipe_details.dart';
 import 'package:recipe_app/widgets/recipe_card.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -12,11 +13,38 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
+  List<Recipe> _getRandomRecipes(List<Recipe> allRecipes, int count) {
+    if (allRecipes.isEmpty) {
+      return [];
+    }
+    final shuffled = List.of(allRecipes)..shuffle();
+    return shuffled.take(count).toList();
+  }
   Widget _buildSearchScreen() {
     if (!_hasSearched) {
       return Center(
-        child: const Text(
-          "Search for what you crave!",
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text("Search for what you crave!"),
+            ElevatedButton(
+              onPressed:() {
+                final randomRecipes = _getRandomRecipes(widget.recipesList, 1);
+                if (randomRecipes.isNotEmpty) {
+                  final randomRecipe = randomRecipes.first;
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (ctx) => RecipeDetails(recipe: randomRecipe),
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('No recipes available to surprise you with!')),
+                  );
+                }
+              },
+             child: const Text("Surprise Me!")),
+          ],
         ),
       );
     }

@@ -49,6 +49,13 @@ class _NewRecipeState extends State<NewRecipe> {
     });
   }
 
+  bool _isFavorite = false;
+  void _toggleFavorite() {
+    setState(() {
+      _isFavorite = !_isFavorite;
+    });
+  }
+
   final List<String> _instructions = [];
 
   final _instructionsController = TextEditingController();
@@ -188,7 +195,8 @@ class _NewRecipeState extends State<NewRecipe> {
         category: _selectedCategory,
         difficulty: _selectedDifficulty,
         notes: _notesController.text,
-        image: _imagePath!, // TODO: figure out favorites
+        image: _imagePath!,
+        isFavorite: _isFavorite,
       ),
     );
 
@@ -242,8 +250,11 @@ class _NewRecipeState extends State<NewRecipe> {
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.favorite_border_sharp),
+              icon: Icon(
+                _isFavorite ? Icons.favorite : Icons.favorite_border,
+                color: _isFavorite ? Colors.red : Colors.grey,
+              ),
+              onPressed: _toggleFavorite,
             ),
           ),
         ],

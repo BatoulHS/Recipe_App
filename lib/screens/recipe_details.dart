@@ -18,10 +18,12 @@ class RecipeDetails extends StatelessWidget {
         title: Text(recipe.name),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.favorite_border_sharp),
+            padding: const EdgeInsets.only(right: 16.0),
+            child: Icon(
+              recipe.isFavorite
+                  ? Icons.favorite
+                  : Icons.favorite_border_outlined,
+              color: recipe.isFavorite ? Colors.red : Colors.grey,
             ),
           ),
         ],
