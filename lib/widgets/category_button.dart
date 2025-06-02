@@ -15,8 +15,8 @@ class CategoryButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed:onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
+          // backgroundColor: Colors.white,
+          // foregroundColor: Colors.black,
           minimumSize: const Size(150, 100),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),

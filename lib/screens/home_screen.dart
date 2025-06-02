@@ -13,6 +13,9 @@ class HomeScreen extends StatelessWidget {
   final List<Category> _categories = Category.values;
 
   List<Recipe> _getRandomRecipes(List<Recipe> allRecipes, int count) {
+    if (allRecipes.isEmpty) {
+      return [];
+    }
     final shuffled = List.of(allRecipes)..shuffle();
     return shuffled.take(count).toList();
   }
@@ -20,16 +23,50 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final randomRecipes = _getRandomRecipes(savedRecipes, 6);
+    Widget content;
+    if (randomRecipes.isEmpty) {
+      content = const Center(
+        child: Text('No Recipes Saved! Start saving your magic to see them here.', textAlign: TextAlign.center),
+      );
+    } else {
+      content = GridView.builder(
+        padding: const EdgeInsets.all(8.0),
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 16,
+          childAspectRatio: 0.7,
+        ),
+        itemCount: randomRecipes.length,
+        itemBuilder:
+            (context, index) => RecipeGridCard(
+              recipe: randomRecipes[index],
+              onTap:
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) =>
+                              RecipeDetails(recipe: randomRecipes[index]),
+                    ),
+                  ),
+            ),
+      );
+    }
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Hello Chef,',
+          style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+        ),
+      ),
       body: Padding(
-        padding: EdgeInsets.fromLTRB(10, 20, 10, 10),
+        // padding: EdgeInsets.fromLTRB(10, 20, 10, 10),
+        padding: const EdgeInsets.all(12.0),
         child: ListView(
           children: [
-            Text(
-              "Hello Chef,",
-              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
             Text("What are you cooking today?", style: TextStyle(fontSize: 20)),
             const SizedBox(height: 20),
             SizedBox(
@@ -59,31 +96,7 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 20),
             Text("Check out your Recipes", style: TextStyle(fontSize: 20)),
             const SizedBox(height: 10),
-            GridView.builder(
-              padding: const EdgeInsets.all(16),
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, 
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                childAspectRatio: 0.7, 
-              ),
-              itemCount: randomRecipes.length,
-              itemBuilder:
-                  (context, index) => RecipeGridCard(
-                    recipe: randomRecipes[index],
-                    onTap:
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) =>
-                                    RecipeDetails(recipe: randomRecipes[index]),
-                          ),
-                        ),
-                  ),
-            ),
+            content,
           ],
         ),
       ),

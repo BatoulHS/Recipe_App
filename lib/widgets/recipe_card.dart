@@ -36,11 +36,10 @@ class RecipeCard extends StatelessWidget {
                         topLeft: Radius.circular(12),
                         bottomLeft: Radius.circular(12),
                       ),
-                      
                     ),
-                    child: Image.file( // TODO ROUND THE EDGES 
-                      File(recipe.image),
-                      fit: BoxFit.cover,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.file(File(recipe.image), fit: BoxFit.cover),
                     ),
                   ),
                   SizedBox(width: 40),
@@ -54,7 +53,7 @@ class RecipeCard extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                             fontSize: 24,
                           ),
-                          maxLines: 2, // Limits to 2 lines
+                          maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),

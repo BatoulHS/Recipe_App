@@ -14,15 +14,22 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   Widget _buildSearchScreen() {
     if (!_hasSearched) {
-      return const SizedBox();
+      return Center(
+        child: const Text(
+          "Search for what you crave!",
+        ),
+      );
     }
 
     return _searchResults.isEmpty
         ? const Center(child: Text('No recipes found'))
-        : ListView.builder(
-          itemCount: _searchResults.length,
-          itemBuilder:
-              (context, index) => RecipeCard(recipe: _searchResults[index]),
+        : Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ListView.builder(
+            itemCount: _searchResults.length,
+            itemBuilder:
+                (context, index) => RecipeCard(recipe: _searchResults[index]),
+          ),
         );
   }
 
@@ -34,8 +41,6 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
-    // _searchResults = widget.recipesList;
-    _searchResults = [];
     _searchController.addListener(_searchRecipes);
   }
 
@@ -47,15 +52,15 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void _searchRecipes() {
+    final query = _searchController.text.trim();
     setState(() {
       _hasSearched = _searchController.text.isNotEmpty;
-      _searchResults = _search(_searchController.text, widget.recipesList);
+      _searchResults = _search(query, widget.recipesList);
     });
   }
 
   List<Recipe> _search(String query, List<Recipe> recipes) {
     if (query.isEmpty) {
-      // return _searchResults;
       return [];
     }
     return recipes.where((recipe) {
@@ -71,7 +76,8 @@ class _SearchScreenState extends State<SearchScreen> {
         title: TextField(
           controller: _searchController,
           decoration: InputDecoration(
-            hintText: 'Search by name or ingredients...',
+            hintText: 'Search by name or ingredient',
+            hintStyle: TextStyle(fontSize: 14),
             prefixIcon: const Icon(Icons.search),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.0),

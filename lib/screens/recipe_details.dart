@@ -1,21 +1,4 @@
-// import 'package:flutter/material.dart';
-// import 'package:recipe_app/models/recipe.dart';
-
-// class RecipeDetails extends StatelessWidget{
-//   const RecipeDetails ({super.key, required this.recipe});
-
-//   final Recipe recipe;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Text("data"),
-//     );
-//   }
-// }
-
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:recipe_app/models/recipe.dart';
 
@@ -31,25 +14,24 @@ class RecipeDetails extends StatelessWidget {
     List<String> instructionsList = recipe.instructions.split('|');
 
     return Scaffold(
-      appBar: AppBar(title: Text(recipe.name)),
+      appBar: AppBar(
+        title: Text(recipe.name),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.favorite_border_sharp),
+            ),
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Container(
-              //   width: double.infinity,
-              //   height: 250,
-              //   decoration: BoxDecoration(
-              //     borderRadius: BorderRadius.circular(12),
-              //     image: DecorationImage(
-              //       image: FileImage(File(recipe.image)),
-              //       fit: BoxFit.cover,
-              //     ),
-              //   ),
-              //   // child: Image.file(File(recipe.image), fit: BoxFit.cover),
-              // ),
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: Image.file(
@@ -124,7 +106,10 @@ class RecipeDetails extends StatelessWidget {
                     contentPadding: EdgeInsets.zero,
                     visualDensity: VisualDensity.compact,
                     leading: const Icon(Icons.circle, size: 8),
-                    title: Text(ingredientsList[index]),
+                    title: Text(
+                      ingredientsList[index].toUpperCase()[0] +
+                          ingredientsList[index].substring(1),
+                    ),
                   );
                 },
               ),
@@ -156,7 +141,10 @@ class RecipeDetails extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    title: Text(instructionsList[index]),
+                    title: Text(
+                      instructionsList[index].toUpperCase()[0] +
+                          instructionsList[index].substring(1),
+                    ),
                   );
                 },
               ),
@@ -164,16 +152,19 @@ class RecipeDetails extends StatelessWidget {
                 const SizedBox(height: 24),
                 const Text(
                   "Notes",
-                  style: TextStyle(
-                    fontSize: 20, // Explicit font size
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 16.0),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(width: 1),
+                  ),
                   child: Text(
                     recipe.notes!,
-                    style: const TextStyle(fontSize: 16), // Explicit font size
+                    style: const TextStyle(fontSize: 16),
                   ),
                 ),
               ],

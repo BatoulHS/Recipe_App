@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:recipe_app/models/recipe.dart';
 import 'package:recipe_app/data/recipe_storage.dart';
-import 'package:recipe_app/recipes_app.dart';
+// import 'package:recipe_app/recipes_app.dart';
 import 'package:recipe_app/screens/all_recipes.dart';
 import 'package:recipe_app/screens/favorites_screen.dart';
+import 'package:recipe_app/screens/home_screen.dart';
 import 'package:recipe_app/screens/new_recipe.dart';
 import 'package:recipe_app/screens/search_screen.dart';
 
@@ -41,7 +42,8 @@ class _TabScreenState extends State<TabScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Widget activePage = RecipesApp(savedRecipesList: widget.savedRecipes);
+    // Widget activePage = RecipesApp(savedRecipesList: widget.savedRecipes);
+    Widget activePage = HomeScreen(savedRecipes: widget.savedRecipes);
 
     if (_selectedIndex == 1) {
       activePage = AllRecipes(recipesList: widget.savedRecipes);
@@ -52,7 +54,7 @@ class _TabScreenState extends State<TabScreen> {
     }
 
     if (_selectedIndex == 3) {
-      activePage = SearchScreen(recipesList: widget.savedRecipes,);
+      activePage = SearchScreen(recipesList: widget.savedRecipes);
     }
 
     if (_selectedIndex == 4) {

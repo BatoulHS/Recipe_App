@@ -88,7 +88,11 @@ class _NewRecipeState extends State<NewRecipe> {
   String _formatDuration(Duration duration) {
     final hours = duration.inHours;
     final minutes = duration.inMinutes.remainder(60);
-    return '$hours:$minutes';
+    if (hours > 0) {
+      return '$hours:${minutes.toString().padLeft(2, '0')}';
+    } else {
+      return '0:${minutes.toString().padLeft(2, '0')}';
+    }
   }
 
  String? _imagePath;
