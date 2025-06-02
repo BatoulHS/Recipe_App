@@ -27,7 +27,7 @@ class _TabScreenState extends State<TabScreen> {
     await insertRecipe(recipe);
   }
 
-  void _onCancel(){
+  void _onCancel() {
     setState(() {
       _selectedIndex = 0;
     });
@@ -52,7 +52,7 @@ class _TabScreenState extends State<TabScreen> {
     }
 
     if (_selectedIndex == 3) {
-      activePage = SearchScreen();
+      activePage = SearchScreen(recipesList: widget.savedRecipes,);
     }
 
     if (_selectedIndex == 4) {
